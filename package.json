@@ -1,26 +1,32 @@
 {
-  "name": "sooloplopluguaa",
+  "name": "Sooloplopluguaa",
   "version": "0.0.0",
   "private": true,
-  "author": "HUBOT_SLACK_TOKEN=xoxb-377181534754-437511558694-UqWW2R9NoLmUD6sBvb8lBeKY ./bin/hubot --adapter slack",
+  "author": "Justin <justarocan@hotmail.com>",
   "description": "Our helpful slave",
   "dependencies": {
-    "hubot": "^3.1.1",
-    "hubot-diagnostics": "^1.0.0",
+    "@slack/client": "^4.6.0",
+    "hubot": "^2.19.0",
+    "hubot-diagnostics": "0.0.2",
     "hubot-google-images": "^0.2.7",
     "hubot-google-translate": "^0.2.1",
-    "hubot-help": "^1.0.1",
+    "hubot-help": "^0.2.2",
     "hubot-heroku-keepalive": "^1.0.3",
     "hubot-maps": "0.0.3",
     "hubot-plusplus": "^1.4.0",
     "hubot-pugme": "^0.1.1",
-    "hubot-redis-brain": "^1.0.0",
-    "hubot-rules": "^1.0.0",
+    "hubot-redis-brain": "0.0.4",
+    "hubot-rules": "^0.1.2",
     "hubot-scripts": "^2.17.2",
     "hubot-shipit": "^0.2.1",
-    "hubot-slack": "^4.5.4"
+    "hubot-slack": "^4.5.1",
+    "hubot-weather": "^1.0.4",
+    "hubot-wikipedia": "0.0.4",
+    "npm": "^6.1.0",
+    "update-notifier": "^2.5.0"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "10.5.0",
+    "npm": "6.1.0"
   }
 }
