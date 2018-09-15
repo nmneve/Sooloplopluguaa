@@ -19,13 +19,12 @@ request = require('request')
 module.exports = (robot) ->
   rulesPath = 'rules.yml'
   rulesFile = fs.readFileSync rulesPath, 'utf-8'
+  rulesData = rulesFile.toString().split("\n")
 
   robot.respond /create (.*) rule: (.*)/i, (msg) ->
     key = msg.match[1].toLowerCase()
     value = msg.match[2]
     isDuplicate = false
-
-    rulesData = rulesFile.toString().split("\n")
 
     regex = new RegExp(key + ":.*", 'i')
 
@@ -39,17 +38,21 @@ module.exports = (robot) ->
       fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
       msg.send "OK, Splop will remember #{key}."
 
-  # robot.respond /forget\s+(.*)/i, (msg) ->
-  #   key = msg.match[1].toLowerCase()
-  #   value = memories()[key]
-  #   delete memories()[key]
-  #   delete memoriesByRecollection()[key]
-  #   msg.send "Ok Splop has forgotten #{key} is #{value}."
+  robot.respond /(.*) rule/i, (msg) ->
+    key = msg.match[1].toLowerCase()
 
-  # robot.respond /what do you remember/i, (msg) ->
-  #   msg.finish()
-  #   keys = []
-  #   keys.push key for key of memories()
-  #   msg.send "Splop remember:\n#{keys.join('\n')}"
+    regex = new RegExp(key + ":.*", 'i')
 
-  #   msg.send "My favorite memories are:\n#{sortedMemories[0..20].join('\n')}"
+    rulesData.forEach (line) ->
+      if line.match regex
+        msg.send line
+
+  # robot.respond /(?:forget|delete|remove?)\s+(.*)/i, (msg) ->
+  #   key = msg.match[1].toLowerCase()  
+  # msg.send "Ok Splop has forgotten #{key}"
+
+  robot.respond /list rules/i, (msg) ->
+    msg.send "Splop remember:"
+    rulesData.forEach (line) ->
+      keyValue = line.split(":")
+      msg.send keyValue[0]
