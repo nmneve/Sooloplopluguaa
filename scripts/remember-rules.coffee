@@ -12,65 +12,44 @@
 # Dependencies:
 #   "underscore": "*"
 
-_ = require('underscore')
+fs = require "fs"
+exec = require('child_process').exec
+request = require('request')
 
 module.exports = (robot) ->
-  memoriesByRecollection = () -> robot.brain.data.memoriesByRecollection ?= {}
-  memories = () -> robot.brain.data.remember ?= {}
+  rulesPath = 'rules.yml'
+  rulesFile = fs.readFileSync rulesPath, 'utf-8'
 
-  findSimilarMemories = (key) ->
-    searchRegex = new RegExp(key, 'i')
-    Object.keys(memories()).filter (key) -> searchRegex.test(key)
-
-  robot.respond /(?:what is|rem(?:ember)?)\s+(.*)/i, (msg) ->
-    words = msg.match[1]
-    if match = words.match /(.*?)(\s+is\s+([\s\S]*))$/i
-      msg.finish()
-      key = match[1].toLowerCase()
-      value = match[3]
-      currently = memories()[key]
-      if currently
-        msg.send "Slop sees that #{key} is already remembered. But that's ok, Splop still likes you."
-      else
-        memories()[key] = value
-        msg.send "OK, Splop will remember #{key}."
-    else if match = words.match /([^?]+)\??/i
-      msg.finish()
-
-      key = match[1].toLowerCase()
-      value = memories()[key]
-
-      if value
-        memoriesByRecollection()[key] ?= 0
-        memoriesByRecollection()[key]++
-      else
-        if match = words.match /\|\s*(grep\s+)?(.*)$/i
-          searchPattern = match[2]
-          matchingKeys = findSimilarMemories(searchPattern)
-          if matchingKeys.length > 0
-            value = "Splop remember:\n#{matchingKeys.join('\n')}"
-          else
-            value = "Splop don't remember anything matching `#{searchPattern}`"
-        else
-          matchingKeys = findSimilarMemories(key)
-          if matchingKeys.length > 0
-            keys = matchingKeys.join('\n')
-            value = "Splop don't remember `#{key}`. Did you mean:\n#{keys}"
-          else
-            value = "Splop don't remember anything matching `#{key}`"
-
-      msg.send value
-
-  robot.respond /(?:forget|delete|remove?)\s+(.*)/i, (msg) ->
+  robot.respond /create (.*) rule: (.*)/i, (msg) ->
     key = msg.match[1].toLowerCase()
-    value = memories()[key]
-    delete memories()[key]
-    delete memoriesByRecollection()[key]
-    msg.send "Ok Splop has forgotten #{key} is #{value}."
+    value = msg.match[2]
+    isDuplicate = false
 
-  robot.respond /list rules/i, (msg) ->
-    msg.finish()
-    keys = []
-    keys.push key for key of memories()
-    msg.send "Splop remember:\n#{keys.join('\n')}"
+    rulesData = rulesFile.toString().split("\n")
 
+    regex = new RegExp(key + ":.*", 'i')
+
+    rulesData.forEach (line) ->
+      if line.match regex
+        isDuplicate = true
+
+    if isDuplicate
+      msg.send "Slop sees that #{key} is already a rule. But that's ok, Splop still likes you."
+    else
+      fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
+      msg.send "OK, Splop will remember #{key}."
+
+  # robot.respond /forget\s+(.*)/i, (msg) ->
+  #   key = msg.match[1].toLowerCase()
+  #   value = memories()[key]
+  #   delete memories()[key]
+  #   delete memoriesByRecollection()[key]
+  #   msg.send "Ok Splop has forgotten #{key} is #{value}."
+
+  # robot.respond /what do you remember/i, (msg) ->
+  #   msg.finish()
+  #   keys = []
+  #   keys.push key for key of memories()
+  #   msg.send "Splop remember:\n#{keys.join('\n')}"
+
+  #   msg.send "My favorite memories are:\n#{sortedMemories[0..20].join('\n')}"
