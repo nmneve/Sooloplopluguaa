@@ -47,12 +47,17 @@ module.exports = (robot) ->
 
   robot.respond /(.*) rule/i, (msg) ->
     key = msg.match[1].toLowerCase()
+    isFound = false
 
     regex = new RegExp(key + ":.*", 'i')
 
     rulesData.forEach (line) ->
       if line.match regex
         msg.send line
+        isFound = true
+
+    if !isFound
+      msg.send "Splop don't know anything about #{key}"
 
   # robot.respond /(?:forget|delete|remove?)\s+(.*)/i, (msg) ->
   #   key = msg.match[1].toLowerCase()  
