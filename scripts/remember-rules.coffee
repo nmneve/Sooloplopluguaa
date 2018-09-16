@@ -38,7 +38,6 @@ module.exports = (robot) ->
           msg.send "Slop sees that #{key} is already a rule. But that's ok, Splop still likes you."
         else
           fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
-          msg.send "OK, Splop will remember #{key}."
 
           exec 'cd #{hubot_home}/sooloplopluguaa && git add . && git commit -m \"Added new rules\" && git push && git push heroku master', (error, stdout, stderr) ->
             console.log 'stdout: ' + stdout
@@ -47,6 +46,8 @@ module.exports = (robot) ->
               console.log 'exec error: ' + error
               msg.send "Uh oh, Splop failed to save to Github"
               return 
+            else
+              msg.send "OK, Splop will remember #{key}."
 
   robot.respond /(.*) rules/i, (msg) ->
     key = msg.match[1].toLowerCase()
