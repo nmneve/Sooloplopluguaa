@@ -24,6 +24,7 @@ module.exports = (robot) ->
       console.log 'stderr: ' + stderr
       if error != null
         console.log 'exec error: ' + error
+        msg.send "Uh oh, Splop failed to pull from Github"
         return
       else
         regex = new RegExp(key + ":.*", 'i')
@@ -43,6 +44,7 @@ module.exports = (robot) ->
             console.log 'stderr: ' + stderr
             if error != null
               console.log 'exec error: ' + error
+              "Uh oh, Splop failed to save to Github"
               return 
 
   robot.respond /(.*) rules/i, (msg) ->
