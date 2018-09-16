@@ -14,7 +14,6 @@
 
 fs = require "fs"
 exec = require('child_process').exec
-request = require('request')
 
 module.exports = (robot) ->
   rulesPath = 'rules.yml'
@@ -26,17 +25,31 @@ module.exports = (robot) ->
     value = msg.match[2]
     isDuplicate = false
 
-    regex = new RegExp(key + ":.*", 'i')
+    exec 'git pull', (error, stdout, stderr) ->
+      console.log 'stdout: ' + stdout
+      console.log 'stderr: ' + stderr
+      if error != null
+        console.log 'exec error: ' + error
+        return
+      else
+        regex = new RegExp(key + ":.*", 'i')
 
-    rulesData.forEach (line) ->
-      if line.match regex
-        isDuplicate = true
+        rulesData.forEach (line) ->
+          if line.match regex
+            isDuplicate = true
 
-    if isDuplicate
-      msg.send "Slop sees that #{key} is already a rule. But that's ok, Splop still likes you."
-    else
-      fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
-      msg.send "OK, Splop will remember #{key}."
+        if isDuplicate
+          msg.send "Slop sees that #{key} is already a rule. But that's ok, Splop still likes you."
+        else
+          fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
+          msg.send "OK, Splop will remember #{key}."
+
+          exec 'git add . && git commit -m \"Added #{key} rules\" && git push && git push heroku master', (error, stdout, stderr) ->
+            console.log 'stdout: ' + stdout
+            console.log 'stderr: ' + stderr
+            if error != null
+              console.log 'exec error: ' + error
+              return 
 
   robot.respond /(.*) rule/i, (msg) ->
     key = msg.match[1].toLowerCase()
