@@ -1,5 +1,5 @@
 # Description
-#   Reads and writes information to a Yaml file
+#   Reads and writes information to a Yaml file.
 #
 # Commands:
 #   hubot create <key> rule: <value> - Creates and saves a new rule
