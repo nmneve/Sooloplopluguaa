@@ -2,8 +2,8 @@
 #   Reads and writes information to a Yaml file.
 #
 # Commands:
-#   hubot create rule <key>: <value> - Creates and saves a new rule
-#   hubot <key> rule - Posts an existing rule
+#   hubot add <key>: <value> - Creates and saves a new rule
+#   hubot <key> rules - Posts an existing rule
 #   hubot list rules - Lists all the created keys
 
 fs = require "fs"
@@ -14,7 +14,7 @@ module.exports = (robot) ->
   rulesFile = fs.readFileSync rulesPath, 'utf-8'
   rulesData = rulesFile.toString().split("\n")
 
-  robot.respond /create rule (.*): (.*)/i, (msg) ->
+  robot.respond /add (.*): (.*)/i, (msg) ->
     key = msg.match[1].toLowerCase()
     value = msg.match[2]
     isDuplicate = false
@@ -45,7 +45,7 @@ module.exports = (robot) ->
               console.log 'exec error: ' + error
               return 
 
-  robot.respond /(.*) rule/i, (msg) ->
+  robot.respond /(.*) rules/i, (msg) ->
     key = msg.match[1].toLowerCase()
     isFound = false
 
