@@ -19,7 +19,7 @@ module.exports = (robot) ->
     value = msg.match[2]
     isDuplicate = false
 
-    exec 'git pull', (error, stdout, stderr) ->
+    exec 'cd ~/sooloplopluguaa && git pull', (error, stdout, stderr) ->
       console.log 'stdout: ' + stdout
       console.log 'stderr: ' + stderr
       if error != null
@@ -39,7 +39,7 @@ module.exports = (robot) ->
           fs.appendFileSync rulesPath, "\n#{key}: '#{value}'", 'utf8'
           msg.send "OK, Splop will remember #{key}."
 
-          exec 'git add . && git commit -m \"Added new rules\" && git push && git push heroku master', (error, stdout, stderr) ->
+          exec 'cd ~/sooloplopluguaa && git add . && git commit -m \"Added new rules\" && git push && git push heroku master', (error, stdout, stderr) ->
             console.log 'stdout: ' + stdout
             console.log 'stderr: ' + stderr
             if error != null
