@@ -1,16 +1,10 @@
 # Description
-#   Remembers a key and value
+#   Reads and writes information to a Yaml file
 #
 # Commands:
-#   hubot what is|remember <key> - Returns a string
-#   hubot remember <key> is <value>. - Returns nothing. Remembers the text for next time!
-#   hubot what do you remember - Returns everything hubot remembers.
-#   hubot forget <key> - Removes key from hubots brain.
-#   hubot what are your favorite memories? - Returns a list of the most remembered memories.  
-#   hubot random memory - Returns a random string
-#
-# Dependencies:
-#   "underscore": "*"
+#   hubot create <key> rule: <value> - Creates and saves a new rule
+#   hubot <key> rule - Posts an existing rule
+#   hubot list rules - Lists all the created keys
 
 fs = require "fs"
 exec = require('child_process').exec
